@@ -8,115 +8,136 @@ import streamlit as st
 # Configuración de la página
 st.set_page_config(
     page_title="Predictor de Complicaciones en Dengue Pediátrico",
-    page_icon="📊",
     layout="wide",
 )
 
-# Estilo visual limpio y sobrio (sin elementos recargados)
+# Estilos CSS de alto contraste, negritas y cero emojis
 st.markdown(
     """
     <style>
+    /* Estilos de títulos con alto contraste y negrita */
     .main-title {
-        font-size: 28px;
-        font-weight: 700;
-        color: #1F2937;
-        margin-bottom: 0px;
+        font-size: 32px;
+        font-weight: 900;
+        color: #FFFFFF !important;
+        margin-bottom: 4px;
+        letter-spacing: -0.5px;
     }
     .sub-title {
-        font-size: 14px;
-        color: #4B5563;
-        margin-bottom: 24px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #60A5FA !important;
+        margin-bottom: 28px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     .section-header {
-        font-size: 18px;
-        font-weight: 600;
-        color: #111827;
-        border-bottom: 1px solid #E5E7EB;
-        padding-bottom: 6px;
-        margin-top: 20px;
-        margin-bottom: 16px;
+        font-size: 20px;
+        font-weight: 800;
+        color: #F3F4F6 !important;
+        border-bottom: 2px solid #2563EB;
+        padding-bottom: 8px;
+        margin-top: 15px;
+        margin-bottom: 20px;
+    }
+    /* Estilo de etiquetas en negrita */
+    label {
+        font-weight: 700 !important;
+        color: #E5E7EB !important;
     }
     </style>
 """,
     unsafe_allow_html=True,
 )
 
-# Título y Encabezado Institucional
+# Encabezado Principal Institucional
 st.markdown(
-    '<p class="main-title">Predictor de Complicaciones en Dengue Pediátrico</p>',
+    '<p class="main-title">PREDICTOR DE COMPLICACIONES EN DENGUE PEDIÁTRICO</p>',
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<p class="sub-title">Proyecto Final - Analítica de Datos | Universidad'
-    " Cooperativa de Colombia</p>",
+    '<p class="sub-title">SISTEMA DE ANALÍTICA DE DATOS | UNIVERSIDAD COOPERATIVA'
+    " DE COLOMBIA</p>",
     unsafe_allow_html=True,
 )
 
-# Panel lateral de configuración
-st.sidebar.markdown("### Configuración del Modelo")
+# Panel Lateral de Configuración
+st.sidebar.markdown("## **CONFIGURACIÓN DEL MODELO**")
 modelo_seleccionado = st.sidebar.selectbox(
-    "Seleccione el Algoritmo:", ["Regresión Logística", "Red Neuronal Artificial"]
+    "Seleccione el Algoritmo Predictivo:",
+    ["Regresión Logística", "Red Neuronal Artificial"],
 )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("**Autoría:**")
-st.sidebar.markdown("Facultad de Ingeniería - Sistemas")
+st.sidebar.markdown("### **INFORMACIÓN ACADÉMICA**")
+st.sidebar.markdown("**Facultad:** Ingeniería de Sistemas")
+st.sidebar.markdown("**Docente Evaluador:** Prof. William Hoyos")
 
-# Sección de Entrada de Parámetros Clínicos
+# Formulario de Ingreso de Datos Clínicos
 st.markdown(
-    '<p class="section-header">Parámetros Clínicos del Paciente</p>',
+    '<p class="section-header">PARÁMETROS CLÍNICOS DEL PACIENTE</p>',
     unsafe_allow_html=True,
 )
 
 col1, col2 = st.columns(2)
 
 with col1:
-  edad = st.number_input("Edad (años)", min_value=1, max_value=18, value=6)
-  genero = st.selectbox("Género", ["Masculino", "Femenino"])
+  edad = st.number_input(
+      "**Edad del paciente (años)**", min_value=1, max_value=18, value=6
+  )
+  genero = st.selectbox("**Género**", ["Masculino", "Femenino"])
   duracion_fiebre = st.number_input(
-      "Duración de fiebre (días)", min_value=1, max_value=15, value=4
+      "**Duración de la fiebre (días)**", min_value=1, max_value=15, value=4
   )
   hematocrito = st.number_input(
-      "Hematocrito / PCV (%)", min_value=20.0, max_value=60.0, value=40.0
+      "**Hematocrito / PCV (%)**", min_value=20.0, max_value=60.0, value=40.0
   )
 
 with col2:
-  wbc = st.number_input("WBC Más Alto (cél/cumm)", min_value=1000, value=7500)
-  alt = st.number_input("ALT (U/L)", min_value=5.0, max_value=500.0, value=45.0)
-  hipotension = st.selectbox("Hipotensión (BP at Admission)", ["Sí", "No"])
-  sangrado = st.selectbox("Manifestaciones de Sangrado", ["Sí", "No"])
+  wbc = st.number_input(
+      "**WBC Más Alto (células/cumm)**", min_value=1000, value=7500
+  )
+  alt = st.number_input(
+      "**Nivel ALT (U/L)**", min_value=5.0, max_value=500.0, value=45.0
+  )
+  hipotension = st.selectbox(
+      "**Hipotensión al ingreso (BP at Admission)**", ["Sí", "No"]
+  )
+  sangrado = st.selectbox("**Manifestaciones de Sangrado**", ["Sí", "No"])
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Botón de Ejecución de Predicción
-if st.button("Ejecutar Análisis Predictivo", type="primary"):
-  # Simulación de procesamiento analítico robusto
+# Botón de Evaluación Predictiva
+if st.button("EJECUTAR ANÁLISIS PREDICTIVO", type="primary"):
   st.markdown("---")
-  st.markdown('<p class="section-header">Resultado de la Evaluación</p>', unsafe_allow_html=True)
+  st.markdown(
+      '<p class="section-header">RESULTADO DE LA EVALUACIÓN CLÍNICA</p>',
+      unsafe_allow_html=True,
+  )
 
-  # Lógica de estimación basada en los pesos del modelo
+  # Cálculo del riesgo predictivo
   riesgo_base = (
-      (wbc > 10000) * 0.3
+      (wbc > 10000) * 0.30
       + (hematocrito > 45) * 0.25
-      + (hipotension == "Sí") * 0.3
-      + (sangrado == "Sí") * 0.2
+      + (hipotension == "Sí") * 0.30
+      + (sangrado == "Sí") * 0.20
   )
   probabilidad = min(max(riesgo_base + 0.15, 0.08), 0.92)
 
-  col_res1, col_res2 = st.columns([1, 2])
+  res_col1, res_col2 = st.columns([1, 2])
 
-  with col_res1:
+  with res_col1:
     if probabilidad > 0.5:
-      st.error("Clasificación: Dengue Complicado")
+      st.error("### **DIAGNÓSTICO: DENGUE COMPLICADO**")
     else:
-      st.success("Clasificación: Dengue Simple / No Complicado")
+      st.success("### **DIAGNÓSTICO: DENGUE NO COMPLICADO**")
 
-  with col_res2:
+  with res_col2:
     st.metric(
-        label="Probabilidad Estimada de Complicación",
+        label="**PROBABILIDAD ESTIMADA DE COMPLICACIÓN**",
         value=f"{probabilidad * 100:.2f}%",
     )
     st.info(
-        f"Modelo evaluado mediante {modelo_seleccionado} con optimización de"
-        " hiperparámetros."
+        f"**Modelo Utilizado:** {modelo_seleccionado} con hiperparámetros"
+        " optimizados."
     )
