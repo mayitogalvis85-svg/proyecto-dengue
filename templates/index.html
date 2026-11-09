@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vitalia Analytics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<header class="hero">
+    <div class="container">
+        <p class="eyebrow">ANALÍTICA DE DATOS</p>
+        <h1>Vitalia Analytics</h1>
+        <p class="hero-subtitle">Modelos para estimar el riesgo de complicaciones en dengue pediátrico</p>
+    </div>
+</header>
+
+<main class="container">
+    <div id="message" class="message hidden"></div>
+
+    <section class="card">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow dark">PREDICCIÓN INDIVIDUAL</p>
+                <h2>Evalúa un registro</h2>
+            </div>
+            <span class="badge">Dos modelos</span>
+        </div>
+        <p class="muted">Ingresa los datos demográficos, clínicos y de laboratorio disponibles en el dataset. Las variables de tratamiento no se usan porque ocurren después de la evaluación inicial.</p>
+        <form id="individual-form" class="form-grid">
+            <div class="form-section-title">Datos demográficos y evolución</div>
+            <label>Edad
+                <select name="age_group" required><option value="0">≤ 6 años</option><option value="1">&gt; 6 años</option></select>
+            </label>
+            <label>Género
+                <select name="gender" required><option value="0">Masculino</option><option value="1">Femenino</option></select>
+            </label>
+            <label>Duración de la fiebre (días)
+                <input name="fever_duration" type="number" min="0" max="30" step="1" value="5" required>
+            </label>
+
+            <div class="form-section-title">Signos y síntomas</div>
+            <label>Dolor de cabeza
+                <select name="headache" required><option value="0">No</option><option value="1">Sí</option></select>
+            </label>
+            <label>Mialgia
+                <select name="myalgia" required><option value="0">No</option><option value="1">Sí</option></select>
+            </label>
+            <label>Dolor abdominal
+                <select name="abdominal_pain" required><option value="0">No</option><option value="1">Sí</option></select>
+            </label>
+            <label>Erupción cutánea
+                <select name="rash" required><option value="0">No</option><option value="1">Sí</option></select>
+            </label>
+            <label>Vómito
+                <select name="vomiting" required><option value="0">No</option><option value="1">Sí</option></select>
+            </label>
+            <label>Dificultad respiratoria
+                <select name="breathlessness" required><option value="0">No</option><option value="1">Sí</option></select>
+            </label>
+            <label>Manifestaciones de sangrado
+                <select name="bleeding" required><option value="0">No</option><option value="1">Sí</option></select>
+            </label>
+            <label>Hipotensión a la admisión
+                <select name="hypotension" required><option value="0">No</option><option value="1">Sí</option></select>
+            </label>
+            <label>Organomegalia
+                <select name="organomegaly" required><option value="0">No</option><option value="1">Sí</option></select>
+            </label>
+
+            <div class="form-section-title">Parámetros de laboratorio</div>
+            <label>Hemoglobina (g/dL)
+                <input name="hb" type="number" min="0" max="30" step="0.1" value="13" required>
+            </label>
+            <label>PCV (%)
+                <input name="pcv" type="number" min="0" max="100" step="0.1" value="42" required>
+            </label>
+            <label>WBC mínimo (células/cumm)
+                <input name="wbc_min" type="number" min="0" step="100" value="3200" required>
+            </label>
+            <label>WBC máximo (células/cumm)
+                <input name="wbc_max" type="number" min="0" step="100" value="7000" required>
+            </label>
+            <label>Plaquetas (células/cumm)
+                <input name="platelets" type="number" min="0" step="1000" value="75000" required>
+            </label>
+            <label>ALT (U/L)
+                <input name="alt" type="number" min="0" step="1" value="70" required>
+            </label>
+            <label>Creatinina (mg/dL)
+                <input name="creatinine" type="number" min="0" step="0.01" value="0.5" required>
+            </label>
+            <label>Ferritina (ng/mL)
+                <input name="ferritin" type="number" min="0" step="1" value="1000" required>
+            </label>
+            <button class="button primary" type="submit">Calcular predicción</button>
+        </form>
+        <div id="individual-results" class="results-grid"></div>
+    </section>
+
+    <section class="card">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow dark">PREDICCIÓN POR LOTE</p>
+                <h2>Analiza un archivo</h2>
+            </div>
+            <span class="badge">CSV o Excel</span>
+        </div>
+        <p class="muted">Carga el archivo original del dataset o uno que contenga las variables demográficas, clínicas y de laboratorio utilizadas por los modelos.</p>
+        <form id="batch-form" class="upload-row">
+            <input name="file" type="file" accept=".csv,.xlsx,.xls" required>
+            <button class="button secondary" type="submit">Procesar archivo</button>
+        </form>
+        <div id="batch-results"></div>
+    </section>
+
+    <section class="card">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow dark">VALIDACIÓN INTERNA</p>
+                <h2>Desempeño de los modelos</h2>
+            </div>
+        </div>
+        <p class="muted">Resultados sobre el conjunto de prueba utilizado durante el entrenamiento del notebook.</p>
+        <div class="metrics-grid">
+            {% for model, values in metrics.items() %}
+            <div class="metric-panel">
+                <h3>{{ model }}</h3>
+                {% for metric, value in values.items() %}
+                <div class="metric-line"><span>{{ metric|upper }}</span><strong>{{ '%.3f'|format(value) }}</strong></div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="disclaimer">
+        <strong>Uso académico:</strong> esta aplicación es una demostración educativa y no reemplaza la valoración de un profesional de la salud.
+    </section>
+</main>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
